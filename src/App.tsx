@@ -1,49 +1,78 @@
-import { createSignal } from "solid-js";
-import logo from "./assets/logo.svg";
-import { invoke } from "@tauri-apps/api/core";
+import { createSignal, Show } from "solid-js";
 import "./App.css";
+import { logger } from "./util/logger";
+import { invoke } from "@tauri-apps/api/core";
+import { twMerge } from "tailwind-merge";
+import Select from "./components/Select";
+import SelectOption from "./components/Select/SelectOption";
+import SelectOptionList from "./components/Select/SelectOptionList";
+import SelectTrigger from "./components/Select/SelectTrigger";
+
+enum FetchState {
+  IDLE,
+  FETCHING
+}
 
 function App() {
-  const [greetMsg, setGreetMsg] = createSignal("");
-  const [name, setName] = createSignal("");
+  const [apiResponse, setApiResponse] = createSignal<string>("No API response...");
+  const [fetchState, setFetchState] = createSignal<FetchState>(FetchState.IDLE);
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name: name() }));
+  // Need some way to pass this to the Select and SelectTrigger
+  // Maybe a `Record<unkown, unknown> | null` prop on the <Select>?
+  const methodColors: Record<string, string> = {
+    "GET": "text-green-500",
+    "POST": "text-yellow-500"
+  }
+
+  const handleURLFormSubmit = async (event: SubmitEvent) => {
+    event.preventDefault();
+
+    setFetchState(FetchState.FETCHING);
+
+    const form = event.currentTarget as HTMLFormElement;
+    const data = new FormData(form);
+
+    const method = data.get("method")
+    const url = data.get("url")
+
+    if (!method || !url) {
+      logger.error("Method or URL is null!");
+      logger.debug(`Error details: method=${method};url=${url}`);
+      return;
+    }
+
+    const response = await invoke("send_api_request", {
+      method: method,
+      url: url
+    }) as string;
+
+    setApiResponse(response);
+    setFetchState(FetchState.IDLE);
   }
 
   return (
-    <main class="container">
-      <h1>Welcome to Tauri + Solid</h1>
+    <main class="flex flex-col justify-start items-center gap-4 m-0">
+      <h1 class="text-3xl font-bold">kAPI</h1>
 
-      <div class="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" class="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" class="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://solidjs.com" target="_blank">
-          <img src={logo} class="logo solid" alt="Solid logo" />
-        </a>
+      <div class="flex flex-col gap-2 w-[90%]">
+        <form onsubmit={handleURLFormSubmit} class="flex flex-row gap-2 p-2 rounded-lg border-2 border-white/20">
+          <Select name="method">
+            <SelectTrigger />
+            <SelectOptionList>
+              <SelectOption value="GET">GET</SelectOption>
+              <SelectOption value="POST">POST</SelectOption>
+            </SelectOptionList>
+          </Select>
+          <input name="url" type="url" required placeholder="https://example.com/" class="p-1 border border-white/20 rounded-lg flex-1" />
+          <Show when={fetchState() === FetchState.IDLE}>
+            <button title="Send API request" class="bg-blue-600 text-white px-2 py-1 rounded-lg cursor-pointer hover:bg-blue-500" type="submit">Send</button>
+          </Show>
+          <Show when={fetchState() === FetchState.FETCHING}>
+            <button title="Send API request" class="bg-blue-600 text-white px-2 py-1 rounded-lg cursor-pointer hover:bg-blue-500 disabled:bg-blue-700" type="submit" disabled>Fetching...</button>
+          </Show>
+        </form>
+        <p>{apiResponse()}</p>
       </div>
-      <p>Click on the Tauri, Vite, and Solid logos to learn more.</p>
-
-      <form
-        class="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg()}</p>
     </main>
   );
 }
