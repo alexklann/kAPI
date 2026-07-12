@@ -1,9 +1,11 @@
 import { children, JSX, onMount, useContext } from "solid-js";
 import { SelectContext } from "./index";
+import { twMerge } from "tailwind-merge";
 
 interface SelectOptionProps {
   children: JSX.Element,
-  value: string
+  value: string,
+  class?: string,
 }
 
 export default function SelectOption(props: SelectOptionProps) {
@@ -23,7 +25,10 @@ export default function SelectOption(props: SelectOptionProps) {
   }
 
   return (
-    <button onclick={handleClick} class="hover:bg-white/10 cursor-pointer py-1 px-2 rounded-md border border-transparent hover:border-white/20 transition-colors duration-100 ease-out">
+    <button onclick={handleClick} class={twMerge(
+      "hover:bg-white/10 cursor-pointer py-1 px-2 rounded-md border border-transparent hover:border-white/20 transition-colors duration-100 ease-out font-bold",
+      props.class ?? ""
+    )}>
       <span>{resolved()}</span>
     </button>
   )
