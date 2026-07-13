@@ -1,6 +1,9 @@
 # kAPI
 
-A fast and modern API client made with Tauri and SolidJS.
+A fast and modern API client made with Tauri and SolidJS.<br>
+![](https://codeberg.org/klann/kAPI/raw/branch/main/static/figma_mock_main.png)
+> Mock design in Figma! Not the current state of the app!
+
 
 ## Features
 - A modern technology stack for performant development.
