@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use serde::Serialize;
 
 #[derive(Debug, Serialize)]
@@ -14,7 +16,11 @@ struct APIResponse {
 }
 
 #[tauri::command]
-async fn send_api_request(method: String, url: String) -> APIResponse {
+async fn send_api_request(
+    method: String,
+    url: String,
+    params: HashMap<String, String>,
+) -> APIResponse {
     let api_method: APIMethods = match method.to_lowercase().as_str() {
         "get" => APIMethods::GET,
         "post" => APIMethods::POST,
