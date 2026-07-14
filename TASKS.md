@@ -1,7 +1,5 @@
 # Parameters
 ## Frontend
-- Add a UUID to each KeyValuePair for easy identification?
-  - Requires small rewrite of current "editing selection logic".
 - Automatic parsing of URL input for params
   - Use possible debounce or major event (`onblur`, clicked out of input, etc...)
 - Adding params to URL when editing table

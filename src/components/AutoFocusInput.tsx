@@ -2,15 +2,13 @@ import { onMount, Setter } from "solid-js";
 import { MaybeNull, MaybeUndefined } from "../types/maybe";
 import { twMerge } from "tailwind-merge";
 
-interface ParamEditPair {
-  type: "key" | "value",
-  key: string
-}
-
 interface AutoFocusInputProps {
   value: string;
   onblur: (newValue: string) => void;
-  setEditingParameter: Setter<MaybeNull<ParamEditPair>>;
+
+  setEditingParameterRowId: Setter<MaybeNull<string>>;
+  setEditingParameterType: Setter<MaybeNull<"key" | "value">>;
+
   class?: string;
 }
 
@@ -26,14 +24,16 @@ export default function AutoFocusInput(props: AutoFocusInputProps) {
     if (!inputRef) return;
     if (e.key === "Enter") {
       props.onblur(inputRef.value);
-      props.setEditingParameter(null);
+      props.setEditingParameterRowId(null);
+      props.setEditingParameterType(null);
     }
   }
 
   const handleBlur = (_e: FocusEvent) => {
     if (!inputRef) return;
     props.onblur(inputRef.value);
-    props.setEditingParameter(null);
+    props.setEditingParameterRowId(null);
+    props.setEditingParameterType(null);
   }
 
   return (
