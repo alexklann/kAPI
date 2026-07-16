@@ -19,7 +19,7 @@ struct APIResponse {
 async fn send_api_request(
     method: String,
     url: String,
-    params: HashMap<String, String>,
+    params: Vec<HashMap<String, String>>,
 ) -> APIResponse {
     let api_method: APIMethods = match method.to_lowercase().as_str() {
         "get" => APIMethods::GET,

@@ -1,13 +1,66 @@
 @import "tailwindcss";
 
+/* Colors pre-fixed with 'c' are custom colors */
+@theme {
+    --color-c-stroke: #484848;
+    --color-c-base: #121212;
+    --color-c-surface-0: #202020;
+    --color-c-surface-1: #242424;
+    --color-c-surface-2: #282828;
+
+    --color-c-brand-100: #D38BFD;
+    --color-c-brand-50: #D38BFD80;
+    --color-c-brand-25: #D38BFD40;
+    --color-c-brand-5: #D38BFD0D;
+
+    --color-c-signal-green-100: #A8FF88;
+    --color-c-signal-green-50: #A8FF8880;
+    --color-c-signal-green-25: #A8FF8840;
+    --color-c-signal-green-5: #A8FF880D;
+
+    --color-c-signal-yellow-100: #FFD52F;
+    --color-c-signal-yellow-50: #FFD52F80;
+    --color-c-signal-yellow-25: #FFD52F40;
+    --color-c-signal-yellow-5: #FFD52F0D;
+
+    --color-c-signal-blue-100: #87B7FF;
+    --color-c-signal-blue-50: #87B7FF80;
+    --color-c-signal-blue-25: #87B7FF40;
+    --color-c-signal-blue-5: #87B7FF0D;
+
+    --color-c-signal-red-100: #FF8989;
+    --color-c-signal-red-50: #FF898980;
+    --color-c-signal-red-25: #FF898940;
+    --color-c-signal-red-5: #FF89890D;
+
+    --spacing-c-s: 5px;
+    --spacing-c-m: 10px;
+}
+
+@utility quick-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@utility quick-center-x {
+    display: flex;
+    justify-content: center;
+}
+
+@utility quick-center-y {
+    display: flex;
+    align-items: center;
+}
+
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
 
-  color: #fafafa;
-  background-color: #000000;
+  color: #ffffff;
+  background-color: #121212;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

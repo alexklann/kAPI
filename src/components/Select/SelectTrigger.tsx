@@ -17,7 +17,7 @@ export default function SelectTrigger(props: SelectTriggerProps) {
 
   return (
     <button onclick={handleClick} class={twMerge(
-      "px-2 py-1 border-2 border-white/20 rounded-lg cursor-pointer hover:bg-white/10 font-bold",
+      "rounded-lg cursor-pointer font-bold text-2xl",
       props.class ?? ""
     )} type="button">
       <span>{selectedValue() || "Select..."}</span>

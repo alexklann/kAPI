@@ -41,7 +41,7 @@ export default function AutoFocusInput(props: AutoFocusInputProps) {
       ref={inputRef}
       onkeydown={handleKeyDown}
       onblur={handleBlur}
-      class={twMerge("flex items-center px-4 flex-1 border-r border-white/20", props.class)}
+      class={twMerge("quick-center-y px-4 flex-1 border-r border-white/20", props.class)}
       value={props.value}
       autocapitalize="off"
       autocomplete="off"

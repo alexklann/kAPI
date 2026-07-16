@@ -14,7 +14,7 @@ export default function SelectOptionList(props: SelectOptionProps) {
 
   return (
     <Show when={open()}>
-      <div class="absolute top-full left-0 mt-1 flex flex-col gap-1 bg-black border-2 border-white/20 p-2 rounded-lg">
+      <div class="absolute top-full left-0 mt-1 flex flex-col gap-1 bg-c-surface-0 border border-c-stroke rounded-lg">
         {resolved()}
       </div>
     </Show>

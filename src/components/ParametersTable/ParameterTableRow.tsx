@@ -32,8 +32,14 @@ export default function ParameterTableRow(props: ParameterTableRowProps) {
     let tempArray = [...props.requestParams()];
     tempArray[arrayIndex] = updatedPair;
 
+    const lastIndex = tempArray.length-1;
+
     // Only add new row if both fields are non-empty
-    if (!stringEmpty(updatedPair.key) && !stringEmpty(updatedPair.value)) {
+    // and there isn't already an empty row in the array.
+    if (
+      !stringEmpty(updatedPair.key) && !stringEmpty(updatedPair.value) &&
+      !stringEmpty(tempArray[lastIndex].key) && !stringEmpty(tempArray[lastIndex].value)
+    ) {
       tempArray.push({ id: createUniqueId(), key: "", value: "" });
     }
 
@@ -50,7 +56,7 @@ export default function ParameterTableRow(props: ParameterTableRowProps) {
               props.setEditingParameterRowId(rowId);
               props.setEditingParameterType("key");
             }}
-            class={`px-4 flex items-center flex-1 border-r border-white/20 cursor-pointer ${!stringEmpty(pair.key) ? "" : "text-white/40"}`}>
+            class={`px-4 quick-center-y flex-1 border-r border-white/20 cursor-pointer ${!stringEmpty(pair.key) ? "" : "text-white/40"}`}>
             {!stringEmpty(pair.key) ? pair.key : "Key"}
           </span>
 
@@ -59,7 +65,7 @@ export default function ParameterTableRow(props: ParameterTableRowProps) {
               props.setEditingParameterRowId(rowId);
               props.setEditingParameterType("value");
             }}
-            class={`px-4 flex items-center flex-1 border-r border-white/20 cursor-pointer ${!stringEmpty(pair.value) ? "" : "text-white/40"}`}>
+            class={`px-4 quick-center-y flex-1 border-r border-white/20 cursor-pointer ${!stringEmpty(pair.value) ? "" : "text-white/40"}`}>
             {!stringEmpty(pair.value) ? pair.value : "Value"}
           </span>
         </Match>
@@ -76,7 +82,7 @@ export default function ParameterTableRow(props: ParameterTableRowProps) {
               props.setEditingParameterRowId(rowId);
               props.setEditingParameterType("value");
             }}
-            class={`px-4 flex items-center flex-1 border-r border-white/20 cursor-pointer ${!stringEmpty(pair.value) ? "" : "text-white/40"}`}>
+            class={`px-4 quick-center-y flex-1 border-r border-white/20 cursor-pointer ${!stringEmpty(pair.value) ? "" : "text-white/40"}`}>
             {!stringEmpty(pair.value) ? pair.value : "Value"}
           </span>
         </Match>
@@ -88,7 +94,7 @@ export default function ParameterTableRow(props: ParameterTableRowProps) {
               props.setEditingParameterRowId(rowId);
               props.setEditingParameterType("key");
             }}
-            class={`px-4 flex items-center flex-1 border-r border-white/20 cursor-pointer ${!stringEmpty(pair.key) ? "" : "text-white/40"}`}>
+            class={`px-4 quick-center-y flex-1 border-r border-white/20 cursor-pointer ${!stringEmpty(pair.key) ? "" : "text-white/40"}`}>
             {!stringEmpty(pair.key) ? pair.key : "Key"}
           </span>
 
