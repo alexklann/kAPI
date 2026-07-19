@@ -14,6 +14,8 @@ interface ParameterTableRowProps {
 
   requestParams: Accessor<KeyValuePair[]>;
   setRequestParams: Setter<KeyValuePair[]>;
+
+  onChange: (valuePair: KeyValuePair) => void;
 }
 
 export default function ParameterTableRow(props: ParameterTableRowProps) {
@@ -44,6 +46,7 @@ export default function ParameterTableRow(props: ParameterTableRowProps) {
     }
 
     props.setRequestParams(tempArray);
+    props.onChange(updatedPair);
   }
 
   return (

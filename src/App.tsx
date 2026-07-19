@@ -36,7 +36,6 @@ function App() {
   const [editingParameterType, setEditingParameterType] = createSignal<MaybeNull<"key" | "value">>(null);
 
   const [urlInput, setUrlInput] = createSignal<string>("");
-  const [parameterizedUrl, setParameterizedUrl] = createSignal<string>("");
 
   const methodColors: Record<string, string> = {
     "GET": "text-c-signal-green-100",
@@ -83,32 +82,38 @@ function App() {
     }
   }
 
-  createEffect(() => {
-    let tempUrl = urlInput();
-    let parameters = requestParams();
+  /**
+   * Parse the parameters table and insert the parameters into the URL input.
+   * This gets run after each <ParameterTableRow> update.
+   */
+  const updateURLFromParameters = () => {
+    try {
+      let url = new URL(urlInput());
+      const params = requestParams();
 
-    // If there are no entries in the table (empty table still HAS one value!!!)
-    if (parameters.length === 1 && stringEmpty(parameters[0].key) && stringEmpty(parameters[0].value)) {
-      setParameterizedUrl(tempUrl);
-      return;
+      // Destructure URL
+      const protocol = url.protocol;
+      const host = url.host;
+      const baseUrl = `${protocol}//${host}`;
+
+      // Strip URL of all parameters
+      url = new URL(baseUrl);
+
+      // We don't need to update the URL if we don't have any parameters
+      // Since we ALWAYS have at least ONE KeyValuePair in our requestParams,
+      // we have to check if we only have one pair and if both the key and value is empty.
+      if (params.length === 1 && stringEmpty(params[0].key) && stringEmpty(params[0].value)) return;
+
+      params.forEach((valuePair, key) => {
+        if (stringEmpty(params[key].key) && stringEmpty(params[key].value)) return;
+        url.searchParams.append(valuePair.key, valuePair.value);
+      })
+
+      setUrlInput(url.toString());
+    } catch {
+      console.error("Error updating URL from parameters table.");
     }
-
-    for (let i = 0; i < parameters.length; i++) {
-      // If the row is completely empty.
-      if (stringEmpty(parameters[i].key) && stringEmpty(parameters[i].value)) continue;
-      // If the value is set but there is no key assigned yet.
-      if (stringEmpty(parameters[i].key) && !stringEmpty(parameters[i].value)) continue;
-
-      // First param always starts with a `?`
-      if (i == 0) {
-        tempUrl += `?${parameters[i].key}=${parameters[i].value}`;
-        continue;
-      }
-      tempUrl += `&${parameters[i].key}=${parameters[i].value}`;
-    }
-
-    setParameterizedUrl(tempUrl);
-  })
+  }
 
   return (
     <main class="h-screen w-screen flex flex-col justify-start items-center gap-4 m-0 p-c-m">
@@ -121,7 +126,7 @@ function App() {
           </SelectOptionList>
         </Select>
         <div class="flex flex-row justify-between bg-c-surface-2 border border-c-stroke pl-c-m pr-c-s py-c-s rounded-lg ">
-          <input onchange={(e) => { setUrlInput(e.currentTarget.value);  parseURLParameters()}} name="url" type="url" required placeholder="https://example.com/" class="flex-1 outline-0" />
+          <input value={urlInput()} onchange={(e) => { setUrlInput(e.currentTarget.value);  parseURLParameters()}} name="url" type="url" required placeholder="https://example.com/" class="flex-1 outline-0" />
           <button title="Send API request" onclick={sendAPIRequest} class="quick-center h-8 w-8 bg-c-surface-2 hover:bg-c-surface-1 border border-c-stroke rounded-md cursor-pointer" disabled={fetchState() === FetchState.FETCHING}>
             <Switch>
               <Match when={fetchState() === FetchState.IDLE}>
@@ -135,7 +140,6 @@ function App() {
             </Switch>
           </button>
         </div>
-        <span class="w-full py-c-s px-c-m border border-c-stroke bg-c-surface-2 text-white/50 rounded-md">{stringEmpty(parameterizedUrl()) ? "No URL entered" : parameterizedUrl()}</span>
         <div class="flex flex-row gap-2 h-full">
           <div class="flex flex-col flex-1 border border-white/20 rounded-lg">
             <div class="flex flex-row w-full border-b border-white/20 min-h-10 bg-white/10 font-bold">
@@ -155,6 +159,8 @@ function App() {
 
                     requestParams={requestParams}
                     setRequestParams={setRequestParams}
+
+                    onChange={(_) => updateURLFromParameters()}
                   />
                 )}
               </For>
